@@ -1,4 +1,6 @@
 int fotosensor=A0;
+const int ledPin = 13;
+
 int previus;
 int receptor;
 int delta=0;
@@ -13,6 +15,7 @@ void setup()
 {
  
 Serial.begin(9600);
+pinMode(ledPin, OUTPUT);
 receptor=analogRead(fotosensor);
 previus=receptor;
 }
@@ -22,24 +25,25 @@ void loop() {
   delta=abs(receptor-previus);
    //Serial.println(delta);
    
-  if ((delta>150) && (receptor>previus)) //skok u vrednosti zbog lasera
+  if ((delta>150) && (receptor>previus)) //value jump because of the laser signal
   {
-    countup=true;             // count up i countdown samo odredjuju da li brojimo duzinu izmedju signala ili duzinu samog signala
+    countup=true;             
     countdown=false;
     didprint=false;
     pauza=0;
   }
    
     
-    else if ((delta>150) && (previus>receptor))   //pad u vrednost ybog gubitka kontakta sa laserom
+    else if ((delta>150) && (previus>receptor))   //value dip due to the loss of signal from the laser
    {
       countup=false;
       countdown=true;
-     if ((timer<160) && (timer>140)) //uzimamo za obzir sanse da dodje do loseg signala
+      digitalWrite(13, LOW); 
+     if ((timer<160) && (timer>140))              //buffer
        {
         temp='*';     
        }
-        else if ((timer<460) && (timer>440))    //buffer u vrednosti od 20ms
+        else if ((timer<460) && (timer>440))    //buffer value of 20ms to avoid 
         {
           temp='-';
          }
@@ -47,7 +51,7 @@ void loop() {
      }
      
       
-      else    //dva brojaca ya duzine pauze i duzine signala
+      else    //two coounters depending on if we are counting the length of the signal or the delay
       {
         if (countdown)
         {
@@ -56,24 +60,25 @@ void loop() {
           else if (countup) 
             {
               timer=timer+1;
+              digitalWrite(13, HIGH); 
             }
         }
 
-  if ((pauza>48) && (didprint=false))   //didprint se korisit da bi smo izbegli konstanto upisivanje temp chara u string
+  if ((pauza>48) && (didprint=false))   //did print is used to avoid printing the same letter more then once
     {
     morze=morze+temp;
     didprint=true;
     }
-   if (pauza>150)    //ovde bi trebalo yavrsavanje slova
+   if (pauza>150)    
       {
-       printaj(morze);  // digital write slova na led scren bi bilo najbolje da se iybacio kompjuter ali ya sad radi ispisivanjem na terminal
+       printaj(morze);  //it would be optimal to use a LED screen to print the words instead of the serial print 
       }                       
         
 
   previus=receptor;
   delay(1);
 }
-void printaj(String prevodilac)
+void printaj(String prevodilac)         //prevodilac=translator
 {  
 
   if (prevodilac=="*-")

@@ -6,9 +6,9 @@ char c;
 char a;
 int l;
 int leng;
-String database[26]{"*-","-***","-*-*","-**","*","**-*","--*","****","**","*---","-*-","*-**","--","-*","---","*--*","--*-","*-*","***","-","**-","***-","*--","-**-","-*--","--**"};// database[ktia-'A']
+String database[26]{"*-","-***","-*-*","-**","*","**-*","--*","****","**","*---","-*-","*-**","--","-*","---","*--*","--*-","*-*","***","-","**-","***-","*--","-**-","-*--","--**"};
 void setup() {
-Serial.begin(9600);  // put your setup code here, to run once:
+Serial.begin(9600);  
 pinMode(13,OUTPUT);
 pinMode(buzzer, OUTPUT);
 }
@@ -20,22 +20,22 @@ void loop() {
     priv=Serial.readString();
     l=priv.length();
     Serial.println(l);
-    priv.toUpperCase();
-   
+    priv.toUpperCase(); // upcasing the whole string to avoid issuesm with undercase and upercase letters 
+    Serial.println("Encoding and sending the message");
     for (int i=0; i<l; i++)
-{
+    {
   a=priv[i];
-  translate(a);
-  delay(100);
+  translate(a); 
+  delay(100);     // delay of 100ms to let the receiver code know that the transmition of the letter is over
     
     }
-    
+   Serial.println("Message sent"); 
   }
 
 }
 
 
-void translate(char b)        //treba samo zameniti mesta ovom sranju a za to nemam zivaca
+void translate(char b)        // comparing letters with the database array to find a string of * and - that coresponds to the letter
 {
    prevod=database[b-'A'];
    leng=prevod.length();
@@ -43,7 +43,7 @@ void translate(char b)        //treba samo zameniti mesta ovom sranju a za to ne
   {
     if (prevod[k]='*')
 {
-  digitalWrite(13, HIGH);
+  digitalWrite(13, HIGH);   
   tone(buzzer, 2000);
   delay(200);
   digitalWrite(13,LOW);

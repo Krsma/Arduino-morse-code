@@ -1,0 +1,4 @@
+20.1.2017
+-Translated variables and comments into english
+-Added quality of life improvemnts such as light and a buzzer indicating when a sinal is sent
+-Added a notification into the sender code when a message is being sent
