@@ -1,2 +1,3 @@
 # Arduino-morse-code
-Arduino kod za slanje i primanje signala.
+Arduino code for receiving and sending signals via a light source.
+
