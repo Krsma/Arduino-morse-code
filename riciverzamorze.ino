@@ -1,20 +1,21 @@
-int fotosensor=A0;
+int fotosensor=A0;          // ubaci millis, duinonije sposoban
 const int ledPin = 13;
 
 int previus;
 int receptor;
 int delta=0;
-int timer=0;
+int timer=1;
 int pauza=0;
 boolean countup=false;
 boolean countdown=false;
 boolean didprint;
+boolean didprint2;
 char temp;
 String morze="";
 void setup() 
 {
  
-Serial.begin(9600);
+Serial.begin(115200);
 pinMode(ledPin, OUTPUT);
 receptor=analogRead(fotosensor);
 previus=receptor;
@@ -23,19 +24,30 @@ previus=receptor;
 void loop() {
   receptor=analogRead(fotosensor);
   delta=abs(receptor-previus);
-   //Serial.println(delta);
+  if (timer>0)
+  {
+  Serial.println(timer);
+  // Serial.println(pauza);
+  if (delta>150)
+  {
+    Serial.println(delta);
+    }
    
+  }
+  
   if ((delta>150) && (receptor>previus)) //value jump because of the laser signal
   {
     countup=true;             
     countdown=false;
     didprint=false;
+    didprint2=false;
     pauza=0;
   }
    
     
     else if ((delta>150) && (previus>receptor))   //value dip due to the loss of signal from the laser
    {
+    
       countup=false;
       countdown=true;
       digitalWrite(13, LOW); 
@@ -69,9 +81,10 @@ void loop() {
     morze=morze+temp;
     didprint=true;
     }
-   if (pauza>150)    
+   if ((pauza>150) && (didprint2=false))  
       {
        printaj(morze);  //it would be optimal to use a LED screen to print the words instead of the serial print 
+       didprint2=true;
       }                       
         
 
