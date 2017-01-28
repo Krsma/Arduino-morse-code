@@ -1,15 +1,16 @@
 int fotosensor=A0;          // ubaci millis, duinonije sposoban
 const int ledPin = 13;
 
+unsigned long pauzastart;
+unsigned long firstsignal;
+unsigned long lastsignal;
+
 int previus;
 int receptor;
 int delta=0;
 int timer=1;
 int pauza=0;
-boolean countup=false;
-boolean countdown=false;
-boolean didprint;
-boolean didprint2;
+
 char temp;
 String morze="";
 void setup() 
@@ -24,33 +25,38 @@ previus=receptor;
 void loop() {
   receptor=analogRead(fotosensor);
   delta=abs(receptor-previus);
-  if (timer>0)
-  {
-  Serial.println(timer);
-  // Serial.println(pauza);
-  if (delta>150)
-  {
-    Serial.println(delta);
-    }
+ 
    
-  }
+  
   
   if ((delta>150) && (receptor>previus)) //value jump because of the laser signal
   {
-    countup=true;             
-    countdown=false;
-    didprint=false;
-    didprint2=false;
+    pauza=pauzastart-millis();
+    
+     if (pauza>48) 
+    {
+    morze=morze+temp;
+   
+    }
+   if (pauza>150) 
+      {
+       printaj(morze);
+      }
+                   
+    firstsignal=millis();
+   
     pauza=0;
   }
    
     
     else if ((delta>150) && (previus>receptor))   //value dip due to the loss of signal from the laser
    {
-    
-      countup=false;
-      countdown=true;
-      digitalWrite(13, LOW); 
+      lastsignal=millis();
+      timer=lastsignal-firstsignal;
+      pauzastart=millis();
+     
+      
+      
      if ((timer<160) && (timer>140))              //buffer
        {
         temp='*';     
@@ -60,36 +66,18 @@ void loop() {
           temp='-';
          }
       timer=0;
-     }
-     
-      
-      else    //two coounters depending on if we are counting the length of the signal or the delay
-      {
-        if (countdown)
-        {
-        pauza=pauza+1;
-        }
-          else if (countup) 
-            {
-              timer=timer+1;
-              digitalWrite(13, HIGH); 
-            }
-        }
 
-  if ((pauza>48) && (didprint=false))   //did print is used to avoid printing the same letter more then once
-    {
-    morze=morze+temp;
-    didprint=true;
+      
     }
-   if ((pauza>150) && (didprint2=false))  
-      {
-       printaj(morze);  //it would be optimal to use a LED screen to print the words instead of the serial print 
-       didprint2=true;
-      }                       
+     
+ 
+
+           
         
 
   previus=receptor;
-  delay(1);
+ // delay(1); pitanje je da li je ovo potrebno
+ 
 }
 void printaj(String prevodilac)         //prevodilac=translator
 {  
@@ -172,4 +160,3 @@ void printaj(String prevodilac)         //prevodilac=translator
     
   prevodilac=""; 
 }
-
