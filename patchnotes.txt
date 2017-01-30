@@ -5,3 +5,5 @@
 28.1.2017
 -fixed a critical bug where long procesing time would cause an integer overflow
  by replacing custom timer variable with built in millis() function.
+30.1.2017
+-mostly bug fixing and QoL improvments

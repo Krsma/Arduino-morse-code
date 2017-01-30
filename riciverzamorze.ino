@@ -5,6 +5,10 @@ unsigned long pauzastart;
 unsigned long firstsignal;
 unsigned long lastsignal;
 
+boolean didadd;
+boolean didprint;
+boolean nosignal;
+
 int previus;
 int receptor;
 int delta=0;
@@ -20,6 +24,7 @@ Serial.begin(115200);
 pinMode(ledPin, OUTPUT);
 receptor=analogRead(fotosensor);
 previus=receptor;
+nosignal=false;
 }
 
 void loop() {
@@ -31,17 +36,9 @@ void loop() {
   
   if ((delta>150) && (receptor>previus)) //value jump because of the laser signal
   {
-    pauza=pauzastart-millis();
-    
-     if (pauza>48) 
-    {
-    morze=morze+temp;
-   
-    }
-   if (pauza>150) 
-      {
-       printaj(morze);
-      }
+    nosignal=false;
+    didadd=false;
+    didprint=false;
                    
     firstsignal=millis();
    
@@ -54,7 +51,7 @@ void loop() {
       lastsignal=millis();
       timer=lastsignal-firstsignal;
       pauzastart=millis();
-     
+      nosignal=true;
       
       
      if ((timer<160) && (timer>140))              //buffer
@@ -69,7 +66,26 @@ void loop() {
 
       
     }
+
+  
+
+   if (nosignal)
+    {
+     pauza=pauzastart-millis();
      
+         if ((pauza>48) && (didadd=false)) 
+             {
+               morze=morze+temp;
+              didadd=true;
+             }
+   if ((pauza>150) && (didprint=false))
+       {
+       printaj(morze);
+       didprint=true;
+       }
+
+      
+    }
  
 
            
