@@ -17,6 +17,7 @@ void loop() {
 
   if (Serial.available() > 0) 
   {
+    
     priv=Serial.readString();
     l=priv.length();
     Serial.println(l);
@@ -26,11 +27,60 @@ void loop() {
     {
   a=priv[i];
   translate(a); 
-  delay(100);     // delay of 100ms to let the receiver code know that the transmition of the letter is over
-    
+  delay(300);     // delay of 100ms to let the receiver code know that the transmition of the letter is over
+    /*
+     digitalWrite(13, HIGH);
+     delay(1000);
+     digitalWrite(13,LOW);
+  delay(200);
+     digitalWrite(13, HIGH);
+     delay(1000);
+      digitalWrite(13,LOW);
+  delay(200);
+     digitalWrite(13, HIGH);
+     delay(1000);
+      digitalWrite(13,LOW);
+  delay(200);
+
+     delay(300);
+
+     
+     digitalWrite(13, HIGH);
+     delay(2000);
+      digitalWrite(13,LOW);
+  delay(200);
+     digitalWrite(13, HIGH);
+     delay(2000);
+      digitalWrite(13,LOW);
+  delay(200);
+     digitalWrite(13, HIGH);
+     delay(2000);
+      digitalWrite(13,LOW);
+  delay(200);
+
+   delay(300);
+
+      digitalWrite(13, HIGH);
+     delay(1000);
+     digitalWrite(13,LOW);
+  delay(200);
+     digitalWrite(13, HIGH);
+     delay(1000);
+      digitalWrite(13,LOW);
+  delay(200);
+     digitalWrite(13, HIGH);
+     delay(1000);
+      digitalWrite(13,LOW);
+  delay(200);
+
+     delay(300);
+     delay(100000000);
+     */
+    // ne zaobravi da vratis }
     }
    Serial.println("Message sent"); 
   }
+
 
 }
 
@@ -44,20 +94,21 @@ void translate(char b)        // comparing letters with the database array to fi
     if (prevod[k]='*')
 {
   digitalWrite(13, HIGH);   
-  tone(buzzer, 2000);
-  delay(200);
+ 
+  delay(1000);
+  
   digitalWrite(13,LOW);
-  noTone(buzzer); 
-  delay(50);
+  
+  delay(200);
   }
 if (prevod[k]='-')
 {
   digitalWrite(13, HIGH);
-  tone(buzzer, 2000);
-  delay(450);
-  noTone(buzzer);  
+ 
+  delay(2000);
+ 
   digitalWrite(13,LOW);
-  delay(50);
+  delay(200);
   }  
   
   

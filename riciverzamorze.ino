@@ -1,9 +1,18 @@
-int fotosensor=A0;          // ubaci millis, duinonije sposoban
-const int ledPin = 13;
+#include <Wire.h>
+#include <BH1750.h>
+
+
+
+
+BH1750 lightMeter(0x23);
+
+
+int fotosensor=A0;         
+
 
 unsigned long pauzastart;
-unsigned long firstsignal;
-unsigned long lastsignal;
+unsigned long signalstart;
+
 
 boolean didadd;
 boolean didprint;
@@ -17,84 +26,76 @@ int pauza=0;
 
 char temp;
 String morze="";
-void setup() 
-{
+void setup(){
+
+  Serial.begin(9600);
+ lightMeter.begin(BH1750_CONTINUOUS_HIGH_RES_MODE);
  
-Serial.begin(115200);
-pinMode(ledPin, OUTPUT);
-receptor=analogRead(fotosensor);
-previus=receptor;
-nosignal=false;
+
 }
 
+
 void loop() {
-  receptor=analogRead(fotosensor);
-  delta=abs(receptor-previus);
- 
-   
+
+  uint16_t signal = lightMeter.readLightLevel();
+ //Serial.println(signal);
+
+ if ((signal>10) && (previus<10))
+ {
+  signalstart=millis();
+ didprint=false;
+ didadd=false;
+ pauza=0;
+ //Serial.println("swe got signa"); 
   
-  
-  if ((delta>150) && (receptor>previus)) //value jump because of the laser signal
-  {
-    nosignal=false;
-    didadd=false;
-    didprint=false;
-                   
-    firstsignal=millis();
-   
-    pauza=0;
   }
-   
-    
-    else if ((delta>150) && (previus>receptor))   //value dip due to the loss of signal from the laser
-   {
-      lastsignal=millis();
-      timer=lastsignal-firstsignal;
-      pauzastart=millis();
-      nosignal=true;
-      
-      
-     if ((timer<160) && (timer>140))              //buffer
+  else if ((signal<10) && (previus>10))
+  {
+    timer=millis()-signalstart;
+      //Serial.println("si ziv");
+     if ((timer<900) && (timer>1100))              //buffer
        {
         temp='*';     
        }
-        else if ((timer<460) && (timer>440))    //buffer value of 20ms to avoid 
+        else if ((timer<1900) && (timer>2100))    //buffer value of 20ms to avoid 
         {
           temp='-';
          }
+         Serial.println(timer);
       timer=0;
-
-      
-    }
+  pauzastart=millis();
+  nosignal=true;
+    
+  }
 
   
-
-   if (nosignal)
+  if (nosignal)
     {
      pauza=millis()-pauzastart;
      
-         if ((pauza>48) && (didadd=false)) 
+         if ((pauza>120) && (didadd=false)) 
              {
                morze=morze+temp;
               didadd=true;
              }
-   if ((pauza>150) && (didprint=false))
-       {
-       printaj(morze);
-       didprint=true;
-       }
-
-      
+             if ((pauza>400) && (didprint=false))
+               {
+                 printaj(morze);
+                 didprint=true;
+               }
     }
- 
 
-           
-        
 
-  previus=receptor;
- // delay(1); pitanje je da li je ovo potrebno
- 
+  
+
+
+
+    previus=signal;
+
+delay(50);
+  
 }
+
 void printaj(String prevodilac)         //prevodilac=translator
 {  
 
