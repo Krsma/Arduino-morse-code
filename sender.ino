@@ -28,7 +28,7 @@ void loop() {
   a=priv[i];
   translate(a); 
   delay(300);     // delay of 100ms to let the receiver code know that the transmition of the letter is over
-    /*
+   /*
      digitalWrite(13, HIGH);
      delay(1000);
      digitalWrite(13,LOW);
@@ -74,10 +74,10 @@ void loop() {
   delay(200);
 
      delay(300);
-     delay(100000000);
+     delay(1000);
      */
     // ne zaobravi da vratis }
-    }
+   }
    Serial.println("Message sent"); 
   }
 
@@ -108,6 +108,7 @@ if (prevod[k]='-')
   delay(2000);
  
   digitalWrite(13,LOW);
+  
   delay(200);
   }  
   

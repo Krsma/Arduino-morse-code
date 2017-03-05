@@ -9,10 +9,12 @@ BH1750 lightMeter(0x23);
 
 int fotosensor=A0;         
 
+extern volatile unsigned long timer0_millis;
+unsigned long new_value = 0;
 
 unsigned long pauzastart;
 unsigned long signalstart;
-
+unsigned long pauza=0;
 
 boolean didadd;
 boolean didprint;
@@ -22,7 +24,7 @@ int previus;
 int receptor;
 int delta=0;
 int timer=1;
-int pauza=0;
+
 
 char temp;
 String morze="";
@@ -30,7 +32,10 @@ void setup(){
 
   Serial.begin(9600);
  lightMeter.begin(BH1750_CONTINUOUS_HIGH_RES_MODE);
- 
+ didprint=false;
+ didadd=false;
+ pauza=0;
+ nosignal=false;
 
 }
 
@@ -45,25 +50,34 @@ void loop() {
   signalstart=millis();
  didprint=false;
  didadd=false;
+      Serial.println(pauza);
+
  pauza=0;
+ nosignal=false;
  //Serial.println("swe got signa"); 
   
   }
   else if ((signal<10) && (previus>10))
   {
+                 
+
     timer=millis()-signalstart;
       //Serial.println("si ziv");
-     if ((timer<900) && (timer>1100))              //buffer
+     if ((timer>900) && (timer<1100))              //buffer
        {
         temp='*';     
        }
-        else if ((timer<1900) && (timer>2100))    //buffer value of 20ms to avoid 
+        else if ((timer>1900) && (timer<2100))    //buffer value of 20ms to avoid 
         {
           temp='-';
          }
-         Serial.println(timer);
+         // Serial.print("timer");
+       //  Serial.println(timer);
+            //  Serial.println(temp);
+
       timer=0;
-  pauzastart=millis();
+ //pauzastart=millis();
+  setMillis(0);
   nosignal=true;
     
   }
@@ -71,16 +85,20 @@ void loop() {
   
   if (nosignal)
     {
-     pauza=millis()-pauzastart;
+      pauza=millis();
+     //pauza=millis()-pauzastart;
+      //Serial.println(pauza);
      
-         if ((pauza>120) && (didadd=false)) 
+         if ((pauza>130) && (didadd=false)) 
              {
-               morze=morze+temp;
+               morze.concat(temp);
               didadd=true;
+              Serial.println(morze);
              }
              if ((pauza>400) && (didprint=false))
                {
                  printaj(morze);
+                 morze="";
                  didprint=true;
                }
     }
@@ -92,7 +110,7 @@ void loop() {
 
     previus=signal;
 
-delay(50);
+delay(30);
   
 }
 
@@ -176,4 +194,10 @@ void printaj(String prevodilac)         //prevodilac=translator
   Serial.print(" ");
     
   prevodilac=""; 
+}
+void setMillis(unsigned long new_millis) {
+    uint8_t oldSREG = SREG;
+    cli();
+    timer0_millis = new_millis;
+    SREG = oldSREG;
 }
