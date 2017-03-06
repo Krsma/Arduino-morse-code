@@ -50,7 +50,7 @@ void loop() {
   signalstart=millis();
  didprint=false;
  didadd=false;
-      Serial.println(pauza);
+      //Serial.println(pauza);
 
  pauza=0;
  nosignal=false;
@@ -85,17 +85,19 @@ void loop() {
   
   if (nosignal)
     {
+      //Serial.print("Usao u no signal");
       pauza=millis();
      //pauza=millis()-pauzastart;
       //Serial.println(pauza);
      
-         if ((pauza>130) && (didadd=false)) 
+         if ((pauza>200) && (didadd==false)) 
              {
+             // Serial.print(temp);
                morze.concat(temp);
               didadd=true;
-              Serial.println(morze);
+             // Serial.println(morze);
              }
-             if ((pauza>400) && (didprint=false))
+             if ((pauza>500) && (didprint==false))
                {
                  printaj(morze);
                  morze="";
@@ -104,7 +106,7 @@ void loop() {
     }
 
 
-  
+//  printaj(morze);
 
 
 
@@ -116,7 +118,7 @@ delay(30);
 
 void printaj(String prevodilac)         //prevodilac=translator
 {  
-
+  Serial.print(prevodilac);
   if (prevodilac=="*-")
     Serial.print("A");
   else if (prevodilac=="-***")  
@@ -191,7 +193,7 @@ void printaj(String prevodilac)         //prevodilac=translator
   else if (prevodilac=="-----")  
     Serial.print("0");
   
-  Serial.print(" ");
+  Serial.println(" ");
     
   prevodilac=""; 
 }

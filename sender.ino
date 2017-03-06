@@ -19,6 +19,7 @@ void loop() {
   {
     
     priv=Serial.readString();
+    Serial.println(priv);
     l=priv.length();
     Serial.println(l);
     priv.toUpperCase(); // upcasing the whole string to avoid issuesm with undercase and upercase letters 
@@ -91,7 +92,7 @@ void translate(char b)        // comparing letters with the database array to fi
    leng=prevod.length();
    for (int k=0;k<leng;k++)
   {
-    if (prevod[k]='*')
+    if (prevod[k]=='*')
 {
   digitalWrite(13, HIGH);   
  
@@ -99,9 +100,9 @@ void translate(char b)        // comparing letters with the database array to fi
   
   digitalWrite(13,LOW);
   
-  delay(200);
+  delay(300);
   }
-if (prevod[k]='-')
+if (prevod[k]=='-')
 {
   digitalWrite(13, HIGH);
  
@@ -109,7 +110,7 @@ if (prevod[k]='-')
  
   digitalWrite(13,LOW);
   
-  delay(200);
+  delay(300);
   }  
   
   
